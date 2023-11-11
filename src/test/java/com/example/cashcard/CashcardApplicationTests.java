@@ -22,11 +22,11 @@ class CashCardApplicationTests {
 
 	@Test
 	void shouldReturnACashCardWhenDataIsSaved() {
-		ResponseEntity<String> response = restTemplate.getForEntity("/cashcards/99", String.class);
+		ResponseEntity<String> getResponse = restTemplate.getForEntity("/cashcards/99", String.class);
 
-		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-		DocumentContext documentContext = JsonPath.parse(response.getBody());
+		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
 
 		Number id = documentContext.read("$.id");
 		assertThat(id).isNotNull();
