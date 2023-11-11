@@ -58,8 +58,13 @@ public class CashCardController {
     public ResponseEntity<List<CashCard>> findAll(Pageable pageable) {
         Page<CashCard> page = cashCardRepository.findAll(
                 PageRequest.of(
+                        //Spring provides the default page and size values (they are 0 and 20, respectively)
+                        //The getPageNumber() method extracts the page query parameter from the request URI
                         pageable.getPageNumber(),
-                        pageable.getPageSize()
+                        //The getPageSize() method extracts the size query parameter from the request URI
+                        pageable.getPageSize(),
+                        //The getSort() method extracts the sort query parameter from the request URI
+                        pageable.getSortOr(Sort.by(Sort.Direction.ASC, "amount"))
                 ));
         return ResponseEntity.ok(page.getContent());
     }
