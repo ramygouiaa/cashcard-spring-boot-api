@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.Principal;
 import java.util.List;
 import java.net.URI;
 import java.util.Optional;
@@ -23,9 +24,10 @@ public class CashCardController {
     }
 
     @GetMapping("/{requestedId}")
-    public ResponseEntity<CashCard> findById(@PathVariable Long requestedId) {
+    public ResponseEntity<CashCard> findById(@PathVariable Long requestedId, Principal principal) {
          /* Here would be the code to retrieve the CashCard */
-       Optional<CashCard> cashCardOptional = cashCardRepository.findById(requestedId);
+        Optional<CashCard> cashCardOptional =
+                Optional.ofNullable(cashCardRepository.findByIdAndOwner(requestedId, principal.getName()));
 
         if(cashCardOptional.isPresent()){
             return ResponseEntity.ok(cashCardOptional.get());
@@ -43,9 +45,11 @@ public class CashCardController {
     @PostMapping
     private ResponseEntity<Void> createCashCard(
             @RequestBody CashCard newCashCardRequest,
-            UriComponentsBuilder ucb) {
+            UriComponentsBuilder ucb,
+            Principal principal) {
 
-        CashCard savedCashCard = cashCardRepository.save(newCashCardRequest);
+        CashCard cashCardWithOwner = new CashCard(null, newCashCardRequest.amount(), principal.getName());
+        CashCard savedCashCard = cashCardRepository.save(cashCardWithOwner);
         URI locationOfNewCashCard = ucb
                 .path("cashcards/{id}")
                 .buildAndExpand(savedCashCard.id())
@@ -55,8 +59,8 @@ public class CashCardController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CashCard>> findAll(Pageable pageable) {
-        Page<CashCard> page = cashCardRepository.findAll(
+    public ResponseEntity<List<CashCard>> findAll(Pageable pageable ,Principal principal) {
+        Page<CashCard> page = cashCardRepository.findByOwner(principal.getName(),
                 PageRequest.of(
                         //Spring provides the default page and size values (they are 0 and 20, respectively)
                         //The getPageNumber() method extracts the page query parameter from the request URI
