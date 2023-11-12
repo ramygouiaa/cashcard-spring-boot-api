@@ -11,7 +11,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.security.Principal;
 import java.util.List;
 import java.net.URI;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/cashcards")
@@ -29,12 +28,12 @@ public class CashCardController {
             Principal principal) {
 
          /* Here would be the code to retrieve the CashCard */
-        CashCard cashCard = cashCardRepository.findByIdAndOwner(requestedId, principal.getName());
+        CashCard cashCard = findCashCard(requestedId, principal);
         if (cashCard != null) {
             return ResponseEntity.ok(cashCard);
-        } else {
-            return ResponseEntity.notFound().build();
         }
+
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
@@ -74,8 +73,7 @@ public class CashCardController {
             @RequestBody CashCard cashCardUpdate,
             Principal principal) {
 
-        CashCard cashCard = cashCardRepository.findByIdAndOwner(requestedId, principal.getName());
-
+        CashCard cashCard = findCashCard(requestedId, principal);
         if (cashCard != null){
             CashCard updatedCashCard = new CashCard(cashCard.id(), cashCardUpdate.amount(), principal.getName());
             cashCardRepository.save(updatedCashCard);
@@ -83,6 +81,10 @@ public class CashCardController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    private CashCard findCashCard(Long requestedId, Principal principal) {
+        return cashCardRepository.findByIdAndOwner(requestedId, principal.getName());
     }
 
 }
