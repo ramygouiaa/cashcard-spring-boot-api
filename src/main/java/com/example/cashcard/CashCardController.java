@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -75,12 +74,15 @@ public class CashCardController {
     }
 
     @PutMapping("/{requestedId}")
-    private ResponseEntity<HttpStatus> updateCashCard(
+    private ResponseEntity<Void> putCashCard(
             @PathVariable Long requestedId,
-            @RequestBody CashCard cashCardUpdate) {
+            @RequestBody CashCard cashCardUpdate,
+            Principal principal) {
 
+        CashCard cashCard = cashCardRepository.findByIdAndOwner(requestedId, principal.getName());
+        CashCard updatedCashCard = new CashCard(cashCard.id(), cashCardUpdate.amount(), principal.getName());
+        cashCardRepository.save(updatedCashCard);
         return ResponseEntity.noContent().build();
     }
-
 
 }
