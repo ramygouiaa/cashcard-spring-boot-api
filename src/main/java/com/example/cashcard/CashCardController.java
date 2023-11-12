@@ -24,22 +24,17 @@ public class CashCardController {
     }
 
     @GetMapping("/{requestedId}")
-    public ResponseEntity<CashCard> findById(@PathVariable Long requestedId, Principal principal) {
-         /* Here would be the code to retrieve the CashCard */
-        Optional<CashCard> cashCardOptional =
-                Optional.ofNullable(cashCardRepository.findByIdAndOwner(requestedId, principal.getName()));
+    public ResponseEntity<CashCard> findById(
+            @PathVariable Long requestedId,
+            Principal principal) {
 
-        if(cashCardOptional.isPresent()){
-            return ResponseEntity.ok(cashCardOptional.get());
-        }else{
+         /* Here would be the code to retrieve the CashCard */
+        CashCard cashCard = cashCardRepository.findByIdAndOwner(requestedId, principal.getName());
+        if (cashCard != null) {
+            return ResponseEntity.ok(cashCard);
+        } else {
             return ResponseEntity.notFound().build();
         }
-
-       /*
-       * OR with functional style expression
-       *
-       * return cashCardOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-       * */
     }
 
     @PostMapping
