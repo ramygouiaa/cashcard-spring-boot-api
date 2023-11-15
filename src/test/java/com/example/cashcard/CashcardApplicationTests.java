@@ -35,11 +35,11 @@ class CashCardApplicationTests {
 
 		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
 
-		Number id = documentContext.read("$.id");
+		Number id = documentContext.read("$.cashCard.id");
 		assertThat(id).isNotNull();
 		assertThat(id).isEqualTo(99);
 
-		Number amount = documentContext.read("$.amount");
+		Number amount = documentContext.read("$.cashCard.amount");
 		assertThat(amount).isNotNull();
 		assertThat(amount).isEqualTo(123.45);
 	}
@@ -75,9 +75,9 @@ class CashCardApplicationTests {
 
 		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
 
-		Number id = documentContext.read("$.id");
+		Number id = documentContext.read("$.cashCard.id");
 
-		Double amount = documentContext.read("$.amount");
+		Double amount = documentContext.read("$.cashCard.amount");
 
 		assertThat(id).isNotNull();
 		assertThat(amount).isEqualTo(250.00);
@@ -193,8 +193,8 @@ class CashCardApplicationTests {
 
 		assertThat(getResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
 		DocumentContext documentContext = JsonPath.parse(getResponse.getBody());
-		Number id = documentContext.read("$.id");
-		Number amount = documentContext.read("$.amount");
+		Number id = documentContext.read("$.cashCard.id");
+		Number amount = documentContext.read("$.cashCard.amount");
 		assertThat(id).isEqualTo(99);
 		assertThat(amount).isEqualTo(19.99);
 
