@@ -23,6 +23,13 @@ dependencies {
 	testImplementation 'com.h2database:h2'
 
 	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	implementation 'org.springframework.boot:spring-boot-starter-hateoas'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas
+	implementation group: 'org.springframework.hateoas', name: 'spring-hateoas', version: '2.1.2'
+
 }
 
 tasks.named('test') {
